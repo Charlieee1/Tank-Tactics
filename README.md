@@ -17,7 +17,7 @@ start_server.bat
 Open `localhost:3000/` in your browser. It will not open automatically.
 
 ### Linux
-**These instructions have not been tested.**
+**These instructions have not been tested.**  
 Navigate to your working directory and run the following:
 ```
 git clone https://github.com/Charlieee1/Tank-Tactics.git
