@@ -1,7 +1,11 @@
+print("none")
+
 from time import sleep, time
 import random
 import fcnt1
 import sys
+
+sys.exit()
 
 random.seed(time())
 
@@ -20,7 +24,7 @@ with open(global_data, 'r') as f:
     mapHeight = int(f.readline().split()[1])
 
 
-players = 
+#players = 
 actions = [5 for i in range(playerCount)]
 health = [3 for i in range(playerCount)]
 ranges = [2 for i in range(playerCount)]
