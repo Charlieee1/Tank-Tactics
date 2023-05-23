@@ -4,7 +4,7 @@ Implementation of the game showcased in [The Game Prototype That Had to Be Banne
 ## Build Instructions
 For any operating system, install nodeJS.
 ### Windows
-Navigate to your working directory and run the following:
+Navigate to your working directory and run the following commands:
 ```
 git clone https://github.com/Charlieee1/Tank-Tactics.git
 cd Tank-Tactics
@@ -17,15 +17,15 @@ start_server.bat
 Open `localhost:3000/` in your browser. It will not open automatically.
 
 ### Linux
-**These instructions have not been tested.**  
-Navigate to your working directory and run the following:
+**These instructions have not been tested. Please note that you may need to run `chmod +x <.sh file>` to run the scripts.**  
+Navigate to your working directory and run the following commands:
 ```
 git clone https://github.com/Charlieee1/Tank-Tactics.git
 cd Tank-Tactics
-npm install express
+npm_install.sh
 ```
-To start the server, run the following command:
+To start the server, run the `start_server.sh` file:
 ```
-node "backend.js"
+start_server.sh
 ```
 Open `localhost:3000/` in your browser. It will not open automatically.
