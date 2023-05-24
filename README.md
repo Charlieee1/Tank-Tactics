@@ -19,7 +19,6 @@ Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open
 ### Linux
 **These instructions have not been tested. Please note that you may need to run `chmod +x <.sh file>` to run the scripts.**  
   
-
 Navigate to your working directory and run the following commands:
 ```
 git clone https://github.com/Charlieee1/Tank-Tactics.git
