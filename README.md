@@ -14,10 +14,12 @@ To start the server, run the `start_server.bat` batch file:
 ```
 start_server.bat
 ```
-Open `localhost:3000/` in your browser. It will not open automatically.
+Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open automatically.
 
 ### Linux
 **These instructions have not been tested. Please note that you may need to run `chmod +x <.sh file>` to run the scripts.**  
+  
+
 Navigate to your working directory and run the following commands:
 ```
 git clone https://github.com/Charlieee1/Tank-Tactics.git
@@ -28,4 +30,4 @@ To start the server, run the `start_server.sh` file:
 ```
 start_server.sh
 ```
-Open `localhost:3000/` in your browser. It will not open automatically.
+Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open automatically.
