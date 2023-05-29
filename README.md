@@ -30,3 +30,10 @@ To start the server, run the `start_server.sh` file:
 start_server.sh
 ```
 Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open automatically.
+
+## TODO:
+1. Make backend functional
+2. Make frontend  
+  
+Percent complete: 10%  
+**Will gladly accept contributions!**
