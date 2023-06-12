@@ -1,5 +1,5 @@
 # Tank-Tactics
-Implementation of the game showcased in [The Game Prototype That Had to Be Banned by Its Own Studio](https://www.youtube.com/watch?v=aOYbR-Q_4Hs)
+Implementation of the game showcased in [The Game Prototype That Had to Be Banned by Its Own Studio](https://www.youtube.com/watch?v=aOYbR-Q_4Hs) [NOT FINISHED]
 
 ## Build Instructions
 For any operating system, install nodeJS.
