@@ -1,4 +1,6 @@
-const webSocket = new WebSocket('ws://localhost:443/');
+const ipAddress = window.location.hostname;
+console.log(ipAddress);
+const webSocket = new WebSocket('ws://'+ipAddress+':443/');
 webSocket.onmessage = (event) => {
   console.log(event)
   document.getElementById('messages').innerHTML += 

@@ -1,4 +1,4 @@
-total_players 0
-players_left 0
-width 20
-height 20
+# Data that is specific to the "world", and not individual players
+total_players 2
+players_left 2
+20 20

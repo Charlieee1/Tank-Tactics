@@ -35,5 +35,5 @@ Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open
 1. Make backend functional
 2. Make frontend  
   
-Percent complete: 10%  
+Percent complete: 15%  
 **Will gladly accept contributions!**
