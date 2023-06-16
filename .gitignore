@@ -1,11 +1,12 @@
 node_modules/
 logs/*
-#python server/player_names
-#python server/player_history
-#python server/player_password_hashes
-#python server/player_ranges
-#python server/player_healths
-#python server/player_positions
-#python server/player_statuses
-#python server/player_votes
-#python server/global_data
+python server/global_data
+python server/player_actions
+python server/player_healths
+python server/player_history
+python server/player_names
+python server/player_password_hashes
+python server/player_positions
+python server/player_ranges
+python server/player_statuses
+python server/player_votes
