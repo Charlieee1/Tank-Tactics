@@ -52,7 +52,7 @@ def getData(file_name, id):
         data = f.readlines()[id + 1] # First line is a comment
     if data == "":
         sys.exit()
-    return data
+    return data.strip()
 
 def setPlayerData(file_name, player, data):
     # Make sure that the player being accessed is always valid
@@ -69,57 +69,70 @@ def distance(pos1, pos2):
 def encrypt(password):
     return sha256(password.encode()).hexdigest()
 
+#move <player id> <player password> <posX> <posY>
 if command[0] == "move":
+    try:
+        player = int(command[1])
+        given_pass = command[2]
+        if encrypt(given_pass) != getData("player_password_hashes", player).strip():
+            print("invalid_input ::: Incorrect password! Someone is trying to move someone else... there will be punishments")
+            sys.exit()
+        player_name = getData("player_names", player)
+        player_actions = int(getData("player_actions", player))
+        mapWidth, mapHeight = map(int,getData("global_data", 2).split(" "))
+        if player_actions == 0:
+            print("invalid_input ::: Unable to move {}! The player has no action points left! They are trying to cheat the system... there will be punishments".format(player_name))
+            sys.exit()
+        coords = (int(command[3]), int(command[4]))
+        if coords[0] < 1 or coords[0] > mapWidth or coords[1] < 1 or coords[1] > mapHeight:
+            print("invalid_input ::: There are boundaries to the map, you know! Illegal movement detected! FBI on the way... there will be punishments")
+            sys.exit()
+        player_position = tuple(map(int,getData("player_positions", player).split(" ")))
+        if distance(coords, player_position) > 1:
+            print("invalid_input ::: {} cannot move that far! The player is currently at {} Somone is attempting teleportation magic... there will be punishments".format(player_name, ", ".join(map(str,player_position))))
+            sys.exit()
+        setPlayerData("Player_actions", player, str(player_actions - 1))
+        setPlayerData("player_positions", player, " ".join(map(str,coords)))
+        addHistory("move {} {}".format(player_name, ", ".join(map(str,coords))))
+        print("data_update ::: move {} {} {}".format(str(player), str(coords[0]), str(coords[1])))
+        print("data_update ::: actions {} {}".format(str(player), str(player_actions - 1)))
+        print("exit")
+        sys.exit()
+    except:
+        print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
+        sys.exit()
+#donate <player id> <player password> <player2 id> <amount>
+elif command[0] == "donate":
     #try:
-    player = int(command[1])
+    player1 = int(command[1])
     given_pass = command[2]
-    if encrypt(given_pass) != getData("player_password_hashes", player).strip():
+    if encrypt(given_pass) != getData("player_password_hashes", player1).strip():
         print("invalid_input ::: Incorrect password! Someone is trying to move someone else... there will be punishments")
         sys.exit()
-    player_name = getData("player_names", player)
-    player_actions = int(getData("player_actions", player))
-    mapWidth, mapHeight = map(int,getData("global_data", 2).split(" "))
-    if player_actions == 0:
-        print("invalid_input ::: Unable to move {}! The player has no action points left! They are trying to cheat the system... there will be punishments".format(player_name))
+    player2 = int(command[3])
+    player1_name = getData("player_names", player1)
+    player2_name = getData("player_names", player2)
+    amount = int(command[4])
+    player1_position = tuple(map(int,getData("player_positions", player1).split(" ")))
+    player2_position = tuple(map(int,getData("player_positions", player2).split(" ")))
+    player1_range = int(getData("player_ranges", player1))
+    if distance(player1_position, player2_position) > player1_range:
+        print("invalid_input ::: {} is unable to donate to {}! {}'s range is not large enough! They are trying to use reach hack... there will be punishments".format(player1_name, player2_name))
         sys.exit()
-    coords = (int(command[3]), int(command[4]))
-    if coords[0] < 1 or coords[0] > mapWidth or coords[1] < 1 or coords[1] > mapHeight:
-        print("invalid_input ::: There are boundaries to the map, you know! Illegal movement detected! FBI on the way... there will be punishments")
+    player1_actions = int(getData("player_actions", player1))
+    if player1_actions < amount:
+        print("invalid_input ::: {} is unable to donate to {}! The player has no action points left! They are trying to cheat the system... there will be punishments".format(player1_name))
         sys.exit()
-    player_position = tuple(map(int,getData("player_positions", player).split(" ")))
-    if distance(coords, player_position) > 1:
-        print("invalid_input ::: {} cannot move that far! The player is currently at {} Somone is attempting teleportation magic... there will be punishments".format(player_name, ", ".join(map(str,player_position))))
-        sys.exit()
-    setPlayerData("Player_actions", player, str(player_actions - 1))
-    setPlayerData("player_positions", player, " ".join(map(str,coords)))
-    print("data_update ::: move {} {} {}".format(str(player), str(coords[0]), str(coords[1])))
-    # The javascript will otherwise think that both data updates are one stdoutput
-    #sleep(4)
-    print("data_update ::: actions {} {}".format(str(player), str(player_actions - 1)))
-    addHistory("{} moved to {}".format(player_name.strip(), ", ".join(map(str,coords))))
-    print("exit")
-    sys.exit()
+    player2_actions = int(getData("player_actions", player2))
+    setPlayerData("player_actions", player1, str(player1_actions - amount))
+    setPlayerData("player_actions", player2, str(player2_actions + amount))
+    addHistory("donate {} {} {}".format(player1_name, player2_name, str(amount)))
+    print("data_update ::: actions {} {}".format(str(player1), str(player1_actions - amount)))
+    print("data_update ::: actions {} {}".format(str(player2), str(player2_actions + amount)))
     #except:
     #    print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
-    #    print("exit")
     #    sys.exit()
 # Everything under here is not worked on - it is the original prototype code
-#elif command[0] == "donate":
-#    try:
-#        player1 = names.index(command[1])
-#        player2 = names.index(command[2])
-#        amount = int(command[3])
-#        if distance(positions[player1], positions[player2]) > ranges[player1]:
-#            print("You are too far to donate! Come within {} square{} of each other to donate action points.".format(str(ranges[player]), "s"if ranges[player] > 1 else ""))
-#            continue
-#        if actions[player1] < amount:
-#            print("You don't have that many actions!")
-#            continue
-#        actions[player1] = actions[player1] - amount
-#        actions[player2] = actions[player2] + amount
-#        print("You have donated {} action point{} to {}".format(command[3], "s"if amount>1 else"", command[2]))
-#    except:
-#        print("donate <player name> <player name> <amount>: donate some action points to another player")
 #elif command[0] == "upgrade":
 #    try:
 #        player = names.index(command[1])
