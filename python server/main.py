@@ -103,47 +103,61 @@ if command[0] == "move":
         sys.exit()
 #donate <player id> <player password> <player2 id> <amount>
 elif command[0] == "donate":
-    #try:
-    player1 = int(command[1])
-    given_pass = command[2]
-    if encrypt(given_pass) != getData("player_password_hashes", player1).strip():
-        print("invalid_input ::: Incorrect password! Someone is trying to move someone else... there will be punishments")
+    try:
+        player1 = int(command[1])
+        given_pass = command[2]
+        if encrypt(given_pass) != getData("player_password_hashes", player1):
+            print("invalid_input ::: Incorrect password! Someone is trying to steal from someone else... there will be punishments")
+            sys.exit()
+        player2 = int(command[3])
+        player1_name = getData("player_names", player1)
+        player2_name = getData("player_names", player2)
+        amount = int(command[4])
+        player1_position = tuple(map(int,getData("player_positions", player1).split(" ")))
+        player2_position = tuple(map(int,getData("player_positions", player2).split(" ")))
+        player1_range = int(getData("player_ranges", player1))
+        if distance(player1_position, player2_position) > player1_range:
+            print("invalid_input ::: {} is unable to donate to {}! {}'s range is not large enough! They are trying to use reach hack... there will be punishments".format(player1_name, player2_name, player1_name))
+            sys.exit()
+        player1_actions = int(getData("player_actions", player1))
+        if player1_actions < amount:
+            print("invalid_input ::: {} is unable to donate to {}! The player does not have enough action points! They are trying to cheat the system... there will be punishments".format(player1_name, player2_name))
+            sys.exit()
+        player2_actions = int(getData("player_actions", player2))
+        setPlayerData("player_actions", player1, str(player1_actions - amount))
+        setPlayerData("player_actions", player2, str(player2_actions + amount))
+        addHistory("donate {} {} {}".format(player1_name, player2_name, str(amount)))
+        print("data_update ::: actions {} {}".format(str(player1), str(player1_actions - amount)))
+        print("data_update ::: actions {} {}".format(str(player2), str(player2_actions + amount)))
         sys.exit()
-    player2 = int(command[3])
-    player1_name = getData("player_names", player1)
-    player2_name = getData("player_names", player2)
-    amount = int(command[4])
-    player1_position = tuple(map(int,getData("player_positions", player1).split(" ")))
-    player2_position = tuple(map(int,getData("player_positions", player2).split(" ")))
-    player1_range = int(getData("player_ranges", player1))
-    if distance(player1_position, player2_position) > player1_range:
-        print("invalid_input ::: {} is unable to donate to {}! {}'s range is not large enough! They are trying to use reach hack... there will be punishments".format(player1_name, player2_name))
+    except:
+        print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
         sys.exit()
-    player1_actions = int(getData("player_actions", player1))
-    if player1_actions < amount:
-        print("invalid_input ::: {} is unable to donate to {}! The player has no action points left! They are trying to cheat the system... there will be punishments".format(player1_name))
+#upgrade <player id> <player password> <amount>
+elif command[0] == "upgrade":
+    try:
+        player = int(command[1])
+        given_pass = command[2]
+        if encrypt(given_pass) != getData("player_password_hashes", player):
+            print("invalid_input ::: Incorrect password! Someone is trying to control someone else... there will be punishments")
+            sys.exit()
+        player_name = getData("player_names", player)
+        player_actions = int(getData("player_actions", player))
+        amount = int(command[3])
+        if amount > player_actions:
+            print("invalid_input ::: {} cannot upgrade their range! The player does not have enough action points! They are trying to cheat the system... there will be punishments".format(player_name))
+            sys.exit()
+        player_range = int(getData("player_ranges", player))
+        setPlayerData("player_actions", player, str(player_actions - amount))
+        setPlayerData("player_ranges", player, str(player_range + amount))
+        addHistory("upgrade {} {}".format(player_name, str(amount)))
+        print("data_update ::: actions {} {}".format(str(player), str(player_actions - amount)))
+        print("data_update ::: range {} {}".format(str(player), str(player_range + amount)))
         sys.exit()
-    player2_actions = int(getData("player_actions", player2))
-    setPlayerData("player_actions", player1, str(player1_actions - amount))
-    setPlayerData("player_actions", player2, str(player2_actions + amount))
-    addHistory("donate {} {} {}".format(player1_name, player2_name, str(amount)))
-    print("data_update ::: actions {} {}".format(str(player1), str(player1_actions - amount)))
-    print("data_update ::: actions {} {}".format(str(player2), str(player2_actions + amount)))
-    #except:
-    #    print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
-    #    sys.exit()
+    except:
+        print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
+        sys.exit()
 # Everything under here is not worked on - it is the original prototype code
-#elif command[0] == "upgrade":
-#    try:
-#        player = names.index(command[1])
-#        amount = int(command[2])
-#        if amount > actions[player]:
-#            print("You don't have enough action points! You need {} action points.".format(str(amount)))
-#            continue
-#        ranges[player] = ranges[player] + amount
-#        actions[player] = actions[player] - amount
-#    except:
-#        print("upgrade <player name> <amount>: upgrade your range")
 #elif command[0] == "attack":
 #    try:
 #        player1 = names.index(command[1])
