@@ -32,8 +32,19 @@ start_server.sh
 Open [localhost:3000/](http://localhost:3000/) in your browser. It will not open automatically.
 
 ## TODO:
-1. Make backend functional
-2. Make frontend  
+- Make backend functional
+  - Add game reset
+  - Add voting
+  - Add ticking utilities
+    - Action points rewarding
+    - Voting result handling
+    - Expiring session tokens
+  - Add user account control system
+    - Account creation
+    - Logging in
+    - Use temporary session tokens instead of passwords that are logged as plaintext (oops)
+    - Logging out
+- Make frontend
   
 Percent complete: 20%  
 **Will gladly accept contributions!**
