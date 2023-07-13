@@ -25,8 +25,16 @@ fs.writeFileSync(logFile, '');
 // Create logger function
 function logger(message) {
   const date = new Date();
-  const formattedDate = date.toLocaleString();
-  fs.appendFileSync(logFile, `[${formattedDate}] ${message}\n`);
+  const formattedDate = date.toLocaleString('en-GB', { timeZone: 'UTC' });
+  const lines = message.split('\n');
+  const space = ' '.repeat(formattedDate.length + 3);
+  for (let i = 0; i < lines.length; i++) {
+    if (i === 0) {
+      fs.appendFileSync(logFile, `[${formattedDate}] ${lines[i]}\n`);
+    } else {
+      fs.appendFileSync(logFile, `${space}${lines[i]}\n`);
+    }
+  }
 }
 
 module.exports = logger;

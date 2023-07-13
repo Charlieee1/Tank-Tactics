@@ -69,6 +69,10 @@ def distance(pos1, pos2):
 def encrypt(password):
     return sha256(password.encode()).hexdigest()
 
+if getData("player_statuses", int(command[1])) == "DEAD":
+    print("invalid_input ::: {} is DEAD! Someone is trying to defy death himself... there will be punishments".format(getData("player_names", int(command[1]))))
+    sys.exit()
+
 #move <player id> <player password> <posX> <posY>
 if command[0] == "move":
     try:
@@ -157,26 +161,43 @@ elif command[0] == "upgrade":
     except:
         print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
         sys.exit()
-# Everything under here is not worked on - it is the original prototype code
-#elif command[0] == "attack":
-#    try:
-#        player1 = names.index(command[1])
-#        player2 = names.index(command[2])
-#        if distance(positions[player1], positions[player2]) > ranges[player1]:
-#            print("You are too far to attack! Come within {} square{} of someone else to attack them.".format(str(ranges[player]), "s"if ranges[player] > 1 else ""))
-#            continue
-#        cost = int(command[3])# * distance(positions[player1], positions[player2])
-#        if cost > actions[player1]:
-#            print("You do not have enough action points to attack! You need {} action points.".format(str(cost)))
-#            continue
-#        health[player2] = max(health[player2] - int(command[3]), 0)
-#        actions[player1] = actions[player1] - cost
-#        if health[player2] == 0:
-#            print("You killed {}!".format(command[2]))
-#            status[player2] = "DEAD"
-#            updateRenderedPlayerPosition(player2)
-#            playersLeft = playersLeft - 1
-#            if playersLeft == 1:
-#                break
-#    except:
-#        print("attack <player name> <player name> <damage>: attack another player")
+#attack <player id> <player password> <player2 id>
+elif command[0] == "attack":
+    #try:
+    player1 = int(command[1])
+    given_pass = command[2]
+    if encrypt(given_pass) != getData("player_password_hashes", player1):
+        print("invalid_input ::: Incorrect password! Someone is trying to control someone else... there will be punishments")
+        sys.exit()
+    player2 = int(command[3])
+    player1_name = getData("player_names", player1)
+    player2_name = getData("player_names", player2)
+    player1_position = tuple(map(int,getData("player_positions", player1).split(" ")))
+    player2_position = tuple(map(int,getData("player_positions", player2).split(" ")))
+    player1_range = int(getData("player_ranges", player1))
+    if distance(player1_position, player2_position) > player1_range:
+        print("invalid_input ::: {} is unable to attack {}! {}'s range is not large enough! They are trying to use reach hack... there will be punishments".format(player1_name, player2_name, player1_name))
+        sys.exit()
+    player1_actions = int(getData("player_actions", player1))
+    if player1_actions < 1:
+        print("invalid_input ::: {} cannot attack {}! The player does not have any action points! They are trying to cheat the system... there will be punishments".format(player1_name, player2_name))
+        sys.exit()
+    player2_health = int(getData("player_healths", player2))
+    setPlayerData("player_actions", player1, str(player1_actions - 1))
+    setPlayerData("player_healths", player2, str(player2_health - 1))
+    addHistory("attack {} {}".format(player1_name, player2_name))
+    print("data_update ::: actions {} {}".format(str(player1), str(player1_actions - 1)))
+    print("data_update ::: health {} {}".format(str(player2), str(player2_health - 1)))
+    if player2_health == 1:
+        setPlayerData("player_statuses", player2, "DEAD")
+        playersLeft = int(getData("global_data", 1).split(" ")[1]) - 1
+        setData("global_data", 1, "players_left " + str(playersLeft))
+        addHistory("dead {}".format(player2_name))
+        print("data_update ::: dead {}".format(str(player2)))
+        if playersLeft == 1:
+            print("data_update ::: winner {}".format(str(player1)))
+            # TODO: Write some code to actually reset the game
+    sys.exit()
+    #except:
+    #    print("invalid_input ::: malformed input! Someone does not know how to send correct packets! Someone is attempting hacking... there will be punishments")
+    #    sys.exit()
